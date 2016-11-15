@@ -1,0 +1,353 @@
+//
+   Created by hachicuong on 8/18/2015.
+
+extends layout
+
+block content
+    link(href='./stylesheets/jquery.countup.css',rel="stylesheet")
+    link(href='./stylesheets/featherlight.min.css',rel="stylesheet")
+    link(href='./stylesheets/jquery-ui.min.css',rel="stylesheet")
+    script(src='./javascripts/jquery-2.1.4.min.js')
+    script(src='./javascripts/jquery-ui.min.js')
+    script(src='./javascripts/dragscroll.js')
+    script(src='./javascripts/jquery.hotkeys.js')
+    script(src='./javascripts/validetta.min.js')
+    script(src='./javascripts/jquery.countup.js')
+    script(src='./javascripts/featherlight.min.js')
+
+    //h1= title
+    style.
+        .countdownHolder {
+            font: 20px/1.5 "Open Sans Condensed", sans-serif;
+            letter-spacing: -3px;
+            position: absolute;
+            right: -63px;
+            text-align: center;
+            top: -11px;
+        }
+        .ui-autocomplete { max-height: 200px; overflow-y: scroll; overflow-x: hidden;}
+        #save-record-main-content .rec #Sr_No{
+            width:30px
+        }
+        #save-record-main-content .rec #Qty{
+            width:28px
+        }
+        #save-record-main-content .rec #Client_item_detail{
+            width:180px
+        }
+
+
+
+
+        .rec input#Price,
+        .rec input#Per_Item{
+            width: 40px;
+        }
+
+
+        #save-record-main-content {
+            display: none;
+            visibility: hidden;
+            max-height: 500px;
+        }
+        .rank_2,.rank_3{background-color: white;}
+
+
+    div(id='info',style='display:none')
+    div(id='entity',style='display:none')
+    script.
+        var username='!{JSON.stringify(username)}';
+        var imgs=!{JSON.stringify(imgs)};
+        var can_load_autosave=!{can_load_autosave};
+        /*var ocr_data=!{JSON.stringify(ocr_data)};*/
+        var doc_info=!{JSON.stringify(doc_info)};
+        Array.prototype.clean = function (deleteValue) {
+            for (var i = 0; i < this.length; i++) {
+                if (this[i] == deleteValue) {
+                    this.splice(i, 1);
+                    i--;
+                }
+            }
+            return this;
+        };
+        imgs=imgs.clean(null);
+        var top_rank=!{JSON.stringify(top)}
+        //var host='#{host}';
+
+
+    div
+        div(style='position: relative;')
+            div#save-record-zone
+                div#save-record-main-bound
+
+                    div#save-record-main-content
+                        div(style='color: blue; width: 90%; text-align: center; margin: 10px auto 0 2px;display:none')
+                            div.header-inline Sr NO
+                            div.header-inline Type
+                            div.header-inline Content
+                            div.header-inline Qty
+                            div.header-inline Price
+                            div.header-inline Per Item
+                        div
+                div#save-record-title
+                    div Open Me
+        div(style='clear:both')
+            div(style='width: 400px; margin: 6px auto; padding: 4px; background: rgb(247, 190, 66) none repeat scroll 0% 0%; border: 1px solid rgb(237, 170, 26);;display:#{comment_display}')
+                div
+                    strong Reset by:
+                    span  #{reset_by}
+                div
+                    strong Comment:
+                    span  #{comment}
+
+        div#addition-info(style='display: inline-block; margin-right: 150px;')
+            div(style='display:inline-block')
+                div(style='overflow: hidden; position: relative; width: 270px; height: 36px;')
+                    iframe(src="package_backlog",style="border: medium none; bottom: 0px; position: relative; width: 1111600px; height: 500px; margin: 0px; padding: 0px; left: -28px; top: -28px;",scrolling="no")
+            div.inline Last receipt:
+                strong(style='margin-left:5px') #{last_receipt}
+            div.inline Current receipt:
+                strong(style='margin-left:5px') #{current_receipt}
+        div#img-buttons
+        div#right-panel-empty
+            div#time-counter
+            div(style='background: rgb(213, 217, 247) none repeat scroll 0% 0%; margin: 9px; padding: 5px 12px;') Package:
+                strong  #{package_name}
+        //div(style='background:rgba(173, 198, 198,0.8);height:8px')
+        div#edit-zone
+            div.container#left-panel-parent
+                div.dragscroll#left-panel(style='cursor: grab; cursor : -o-grab; cursor : -moz-grab; cursor : -webkit-grab;')
+                    img(style='display:none',id='img')
+                    canvas(id='img-drawing')
+            div#right-panel
+                div(style='position: relative;')
+                    form
+                        div#form-edit-zone1
+                            div
+                                div.inline Transaction Type:
+                                select#transaction_type(name='transaction_type',style='width: 124px',disabled)
+                                    option(value='',selected)
+                                    option(value='RSD') RSD
+                                    option(value='UPC') UPC
+                                    option(value='RIN') RIN
+                                    option(value='RIN_RSD') RIN_RSD
+                                    option(value='UPC_RSD') UPC_RSD
+                            div
+                                div.inline Transaction Date:
+                                input#transaction-date(type='text',name='transaction_date',style='background:rgba(111,219,87,.8)',data-validetta="required")
+                            div
+                                div.inline Time:
+                                input#transaction-time.can-ocr(type='text',name='time')
+                        div#keyer-edit-zone(style='margin-top: 8px;margin-left: -50px;')
+                        div
+                            div.inline TOTAL:
+                            input#total-input(type='text',name='total',style='background:rgba(111,219,87,.8)',data-validetta="required,number")
+                        div
+                            input#btn-add(type='button',value='Add')
+                            input#btn-save(type='button',value='Save')
+                        div
+                            input#btn-discard(type='button',value='Discard')
+                    div#discard-form
+                        div
+                            strong REMARK
+                            select#discard-remark
+                                option(selected)
+                                option NO_TXN_DATE
+                                option DOCTORED
+                                option BLURRY
+                                option NOT_ENGLISH
+                                option NOT_FULL_RECEIPT
+                                option NOT_RECEIPT
+                                option GAS ONLY
+                div#key-static-info
+                    table
+                        tr
+                            th(colspan=3,style="padding-left:10px")
+                                strong Comment:
+                                    input(id='txtComment',name='txtComment',style='border: 1px solid rgb(221, 221, 221); border-radius: 4px; font-size: 19px; line-height: 33px; margin: 4px 4px 4px 10px; padding: 2px 6px; text-transform: uppercase; width: 70%; background: rgb(237, 206, 116) none repeat scroll 0% 0%;')
+                        tr
+                            th Num of records
+                            th Sub Total
+                            th Tax
+                            th Total
+                        tr
+                            td
+                                span.mark#num-of-record 0
+                            td
+                                span.mark#sub-total 0
+                            td
+                                span.mark#tax-infol 0
+                            td
+                                span.mark#total-info 0
+                        tr
+                            th Sum of qty
+                            th
+                            th
+                            th
+                        tr
+                            td
+                                span.mark#sum-of-qty 0
+                            td
+                            td
+                            td
+                        tr
+                            th Num of doc
+                            th Num of rec
+                            th Num of discard
+                            th
+                        tr
+                            td
+                                span#sum-of-doc #{num_of_doc}
+                            td
+                                span#sum-of-doc #{num_of_rec}
+                            td
+                                span#sum-of-doc #{num_of_discard}
+                            td
+
+
+                    div(style='display:none')
+                        div#mylightbox
+                            div.p
+                                h4 Knowed issue
+                                p
+                                    strong ...
+                                    span
+                            div.p
+                                h4 Hotkeys
+                                p
+                                    strong F1/F2
+                                    span Go to Previous/Next image
+                                p
+                                    strong F9/F10
+                                    span Zoom image
+                                p
+                                    strong Ctrl + L
+                                    span Show/Hide list records
+                                p
+                                    strong ESC
+                                    span Hide list records
+                                p
+                                    strong Ctrl + Space
+                                    span Add new record
+                                p
+                                    strong Ctrl + S
+                                    span Save doc
+                                p
+                                    strong Ctrl + G
+                                    span Rotate image
+                                p
+                                    strong Ctrl + K
+                                    span Create and copy record
+                                p
+                                    strong Ctrl + P
+                                    span Paste copied record to the lastest in list
+                    div(style='display:none')
+                        div#addons-zone
+                            div#btn-ruler.btn-addon.btn-on Enable Ruler
+                            div#btn-trace-click.btn-addon.btn-on Enable Trace Click
+                    div(style='display:none')
+                        div#msg_saving
+                            div Saving ...
+                div#user-cmd-zone
+                    div.user-cmd-other
+                        a(href='../logout') Logout
+                    div.user-cmd-other
+                        a#show-addons(href='#') Addons
+                    div.user-cmd(data-featherlight="#mylightbox") ?
+            div(style='clear:both')
+
+
+        div#keyer-doc-template(style='display:none')
+            div#upc_template
+                div
+                    div.inline UPC Code:
+                    input.can-ocr#item-client_detail(type='text',name='content')
+                div
+                    div.inline Price:
+                    input.can-ocr#price(type='text',name='price',data-validetta="required,number")
+                div
+                    div.inline Qty:
+                    input#qty(type='text',name='qty',value=1,data-validetta="required,number")
+                div
+                    div.inline Type:
+                    select#item-type(name='type')
+                        option(value='Item',selected) Item
+                        option(value='Void') Void
+                        option(value='Coupon') Coupon
+            div#rsd_template
+                div
+                    div.inline Item description:
+                    input.can-ocr#item-client_detail(type='text',name='content',data-validetta="required",append='append')
+                div
+                    div.inline Price:
+                    input.can-ocr#price(type='text',name='price',data-validetta="required,number")
+                div
+                    div.inline Qty:
+                    input#qty(type='text',name='qty',value=1,data-validetta="required,number")
+                div
+                    div.inline Type:
+                    select#item-type(name='type')
+                        option
+                        option(value='Item',selected) Item
+                        option(value='Void') Void
+                        option(value='Coupon') Coupon
+            div#rin_template
+                div
+                    div.inline Item Number:
+                    input.can-ocr#item-client_detail(type='text',name='content')
+                div
+                    div.inline Price:
+                    input.can-ocr#price(type='text',name='price',data-validetta="required,number")
+                div
+                    div.inline Qty:
+                    input#qty(type='text',name='qty',value=1,data-validetta="required,number")
+                div
+                    div.inline Type:
+                    select#item-type(name='type')
+                        option
+                        option(value='Item',selected) Item
+                        option(value='Void') Void
+                        option(value='Coupon') Coupon
+            div#rin_rsd_template
+                div
+                    div.inline Item Number:
+                    input.can-ocr#item-client_detail(type='text',name='content')
+                div
+                    div.inline Description:
+                    input.can-ocr#description(type='text',name='description',append='append')
+                div
+                    div.inline Price:
+                    input.can-ocr#price(type='text',name='price',data-validetta="required,number")
+                div
+                    div.inline Qty:
+                    input#qty(type='text',name='qty',value=1,data-validetta="required,number")
+                div
+                    div.inline Type:
+                    select#item-type(name='type')
+                        option
+                        option(value='Item',selected) Item
+                        option(value='Void') Void
+                        option(value='Coupon') Coupon
+            div#upc_rsd_template
+                div
+                    div.inline Item Number:
+                    input.can-ocr#item-client_detail(type='text',name='content',maxlength=14)
+                div
+                    div.inline Description:
+                    input.can-ocr#description(type='text',name='description',append='append')
+                div
+                    div.inline Price:
+                    input.can-ocr#price(type='text',name='price',data-validetta="required,number")
+                div
+                    div.inline Qty:
+                    input#qty(type='text',name='qty',value=1,data-validetta="required,number")
+                div
+                    div.inline Type:
+                    select#item-type(name='type')
+                        option
+                        option(value='Item',selected) Item
+                        option(value='Void') Void
+                        option(value='Coupon') Coupon
+    script(src='./javascripts/key.js')
+    script.
+        #{script_message_changed_doctype}

@@ -1,0 +1,116 @@
+//
+   Created by hachicuong on 23-Dec-15.
+
+extends layout
+
+block content
+    link(href='./stylesheets/jquery-ui.min.css',rel="stylesheet")
+    script(src='./javascripts/jquery-2.1.4.min.js')
+    script(src='./javascripts/jquery-ui.min.js')
+    style.
+        .package_processing{
+            background: #9AFA96 none repeat scroll 0 0;
+        }
+        table{
+            border-collapse: collapse;
+        }
+        table td,table th{
+            padding: 4px;
+        }
+        table th{
+            background: #BAC2CF;
+        }
+        .rank_1{
+            background: red url("http://icons.iconarchive.com/icons/fatcow/farm-fresh/16/crown-gold-icon.png") no-repeat scroll 5px center;
+            border: 1px solid;
+            border-radius: 11px;
+            color: yellow;
+            margin: 2px;
+            padding: 3px 5px 3px 24px;
+        }
+
+        .rank_2 {
+            background: rgba(141, 221, 242, 1) url("http://icons.iconarchive.com/icons/custom-icon-design/pretty-office-11/128/number-2-icon.png") no-repeat scroll 2px center / 16px auto;
+            border: 1px solid;
+            color: red;
+            margin: 2px;
+            padding: 2px 2px 2px 20px;
+        }
+
+        .rank_3 {
+            background: rgba(141, 221, 242, 1) url("http://www.dreamlookup.com/assets/img/3.png") no-repeat scroll 2px center / 24px auto;
+            border: 1px solid;
+            color: red;
+            margin: 2px;
+            padding: 2px 2px 2px 26px;
+        }
+
+        .rank_4 {
+            background: rgba(141, 221, 242, 0) url("http://cdn.mysitemyway.com/etc-mysitemyway/icons/legacy-previews/icons/3d-glossy-blue-orbs-icons-alphanumeric/067957-3d-glossy-blue-orb-icon-alphanumeric-number-4.png") no-repeat scroll 2px center / 24px auto;
+            border: 1px solid;
+            color: blue;
+            margin: 2px;
+            padding: 2px 2px 2px 26px;
+        }
+
+        .rank_5 {
+            background: rgba(141, 221, 242, 0) url("http://cdn.mysitemyway.com/etc-mysitemyway/icons/legacy-previews/icons/3d-glossy-green-orbs-icons-alphanumeric/102991-3d-glossy-green-orb-icon-alphanumeric-number-5.png") no-repeat scroll 2px center / 24px auto;
+            border: 1px solid;
+            color: blue;
+            margin: 2px;
+            padding: 2px 2px 2px 26px;
+        }
+    div
+        div
+            div(style='padding:6px;border:1px dotted #ff6060;background:#f6f6f6;margin:25px') Total docs pending:
+                strong #{num_of_docs_pending}
+                div Estimate time left:
+                    strong #{time_left}
+        table(border=1)
+            tr
+                th Package
+                th Left
+                th Holding
+                th Who_is_holding
+            each row in packages
+                if row.hold!=0
+                    tr.package_processing
+                        td #{row.name}
+                        td #{row.count}
+                        td #{row.hold}
+                        td #{row.who_is_holding}
+                else
+                    tr
+                        td #{row.name}
+                        td #{row.count}
+                        td #{row.hold}
+                        td #{row.who_is_holding}
+    script.
+        var top_rank=!{JSON.stringify(top)}
+        for (var i = 0; i < top_rank.length; i++) {
+            var content = $('table').html();
+            if (i === 0) {
+                content = content.replace(top_rank[i].lockedby, '<strong class="rank_1" alt="'+top_rank[i].count+' recs" title="'+top_rank[i].count+' recs">' + top_rank[i].lockedby + '</strong>')
+
+            }
+            else if (i === 1) {
+                content = content.replace(top_rank[i].lockedby, '<strong class="rank_2" alt="'+top_rank[i].count+' recs" title="'+top_rank[i].count+' recs">' + top_rank[i].lockedby + '</strong>')
+
+            }
+            else if (i === 2) {
+                content = content.replace(top_rank[i].lockedby, '<strong class="rank_3" alt="'+top_rank[i].count+' recs" title="'+top_rank[i].count+' recs">' + top_rank[i].lockedby + '</strong>')
+
+            }
+            else if (i === 3) {
+                content = content.replace(top_rank[i].lockedby, '<strong class="rank_4" alt="'+top_rank[i].count+' recs" title="'+top_rank[i].count+' recs">' + top_rank[i].lockedby + '</strong>')
+
+            }
+            else if (i === 4) {
+                content = content.replace(top_rank[i].lockedby, '<strong class="rank_5" alt="'+top_rank[i].count+' recs" title="'+top_rank[i].count+' recs">' + top_rank[i].lockedby + '</strong>')
+
+            }
+            else{
+                content = content.replace(top_rank[i].lockedby, '<strong style="font-style: italic;text-decoration: underline" alt="top '+i+': '+top_rank[i].count+' recs" title="top '+i+': '+top_rank[i].count+' recs">' + top_rank[i].lockedby + '</strong>')
+            }
+            $('table').html(content);
+        }

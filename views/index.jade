@@ -1,0 +1,102 @@
+extends layout
+
+block content
+  style.
+    body{
+      background: #f8f8f8;
+    }
+    input[type=text],
+    input[type=password]{
+      border: 1px solid #498aaa;
+      border-radius: 4px;
+      padding: 5px;
+      width: 250px;
+    }
+    input[type=submit]{
+      background: #31d6aa none repeat scroll 0 0;
+      border: medium none;
+      border-radius: 6px;
+      font-size: 14pt;
+      font-weight: bold;
+      line-height: 30px;
+      padding: 8px;
+      text-align: center;
+      width: 200px;
+    }
+    .login-line{
+      margin: 16px 60px;text-align: left;
+    }
+
+  script(src='./javascripts/jquery-2.1.4.min.js')
+  h1= title
+  p Welcome to #{title}
+  div
+    canvas(id='img-logo',height='100')
+  div(style='background: #fff none repeat scroll 0 0;    height: 386px;    padding: 1px;    position: relative;    width: 100%;border-top:solid 1px #7794a3;border-bottom:solid 1px #7794a3')
+    div(style='background: #fff none repeat scroll 0 0; ')
+      div(style='background: #fff url("/images/crunch-logo.jpg") no-repeat scroll 318px -13px / 200px 100px;    border: 1.6px solid rgb(188, 210, 221);    border-radius: 12px;    height: 360px;    margin: 10px auto;    text-align: center;    width: 500px;')
+        div(style='background: rgba(255, 255, 255, 0.5) none repeat scroll 0 0; margin: 10px;')
+          div(id='login-header',style='border: 1px solid rgba(188, 210, 221, 0.7);    border-radius: 10px;font-size: 20pt;padding: 2px;')
+            strong Login to NexGen
+          div(id='login-form',style='border: 1px solid rgba(188, 210, 221, 0.7);margin: 17px 0;border-radius: 4px;padding: 16px 0;font-size: 12pt;height: 281px;')
+            form(method='POST')
+              div.login-line(style='margin-top: 20px;')
+                span(style='display: inline-block;min-width: 100px;') Username:
+                input(name='username',type='text',value='#{last_username}',required)
+              div.login-line
+                span(style='display: inline-block;min-width: 100px;') Password:
+                input(name='password',type='password',required)
+              div(style='color:red') #{loginmessage}
+              div(style='margin-top: 24px;')
+                input(value="Login",type='submit')
+              div(style='text-align:right;margin-right: 10px;color: #0180a0;cursor:pointer;margin-bottom: 6px;margin-top: 10px;') Forgot your password?
+              div(style='text-align:right;margin-right: 10px;color: #0180a0;cursor:pointer') Get help!
+  script.
+    $(document).ready(function(){
+      var img_drawing_name='img-logo';
+      var canvas=document.getElementById(img_drawing_name);
+      canvas.width=screen.width;
+      var ctx=canvas.getContext("2d");
+
+      var myDiv = $('#img-logo'),
+              finalDivPositionTop, finalDivPositionLeft;
+      var currentDivPosition = myDiv.offset(),
+              myDivWidth = myDiv.width(),
+              myDivHeight = myDiv.height();
+      var fontType = ["Arial", "Verdana", "Helvetica",'serif','Tangerine',];
+
+      function getColor() {
+        var letters = '0123456789ABCDEF'.split('');
+        var color = '#';
+        for (var i = 0; i < 6; i++) {
+          color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+      }
+      var num_of_instant=Math.floor(Math.random() * 5)+10;
+      for(var i=0;i<=num_of_instant;i++){
+        finalDivPositionTop =  Math.floor(Math.random() * myDivHeight);
+        if(finalDivPositionTop<20)
+          finalDivPositionTop=20
+
+        finalDivPositionLeft = Math.floor(Math.random() * myDivWidth)-150;
+        if(finalDivPositionLeft<0)
+          finalDivPositionLeft=5
+
+        var num_font_index = Math.floor(Math.random() * 5);
+        var num = Math.floor(Math.random() * 3);
+        var r_font_size = Math.floor(Math.random() * 32)+8;
+        if(num==0){
+          ctx.font=r_font_size+"px "+fontType[num_font_index];
+        }else if(num==1){
+          ctx.font="bold "+r_font_size+"px "+fontType[num_font_index];
+        }else if(num==2){
+          ctx.font="italic "+r_font_size+"px "+fontType[num_font_index];
+        }
+        /*$('h1').html(finalDivPositionTop+" : "+finalDivPositionLeft+" : "+ctx.font);*/
+
+        ctx.fillStyle=getColor();
+
+        ctx.fillText('Welcome to Crunch',finalDivPositionLeft, finalDivPositionTop);
+      }
+    });
